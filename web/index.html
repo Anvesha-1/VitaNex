@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VitaNex · ICU Early Warning</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef3f9;--card:#fff;--ink:#0d1f3c;--mut:#6b7a93;--line:#e2e9f2;--blue:#0a5fd8;--bl:#e6f0fd;--red:#e5303b;--org:#e8641b;--grn:#12a26b;--f:Inter,"Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{font:14px/1.45 var(--f);color:var(--ink);background:var(--bg)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.side{background:#fff;border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+.logo{display:flex;gap:10px;align-items:center;margin:0 6px 26px}
+.logo svg{width:42px;height:42px}
+.logo b{font-size:22px;font-weight:800;letter-spacing:-.02em}.logo b span{color:var(--blue)}
+.logo small{display:block;font-size:10px;letter-spacing:.16em;color:var(--mut);font-weight:600}
+.cap{font-size:11px;letter-spacing:.14em;font-weight:700;color:var(--mut)}
+.side .cap{margin:0 8px 8px}
+.nav{display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;background:none;border-radius:12px;font-weight:600;color:#3a4a66;text-align:left;width:100%}
+.nav:hover{background:#f3f7fc}.nav.on{background:var(--bl);color:var(--blue)}
+.nav em{margin-left:auto;font-style:normal;font-size:12px;background:var(--bl);color:var(--blue);border-radius:99px;padding:1px 9px}
+.side .foot{margin-top:auto;font-size:12px;color:var(--mut);padding:0 8px}
+.topbar{display:flex;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid var(--line);padding:0 30px;height:64px}
+.crumb{color:var(--mut)}.crumb b{color:var(--ink);font-weight:600;margin-left:8px}
+.pill{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--grn)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--grn);display:inline-block}
+.live .dot{animation:p 1.2s infinite}.paused .dot{background:#b3bccb;animation:none}.paused{color:var(--mut)}
+@keyframes p{50%{box-shadow:0 0 0 6px rgba(18,162,107,.18)}}
+.page{padding:30px;max-width:1500px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.hero .cap{color:var(--blue);display:flex;align-items:center;gap:8px;margin-bottom:8px}
+h1{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.sub{color:var(--mut);font-size:16px;margin-top:6px}
+.ctrl{display:flex;gap:14px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.ctrl label{font-size:12.5px;color:var(--mut);display:flex;gap:8px;align-items:center;font-weight:500}
+.ctrl output{font-weight:700;color:var(--ink);min-width:22px;font-variant-numeric:tabular-nums}
+input[type=range]{accent-color:var(--blue);width:120px}
+.btn{border:0;background:var(--blue);color:#fff;font-weight:700;padding:10px 18px;border-radius:11px}
+.btn.alt{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.kpi .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;font-size:20px}
+.kpi small{color:var(--mut);font-weight:600}
+.kpi b{display:block;font-size:34px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;margin:4px 0}
+.kpi.red{border-top:3px solid var(--red)}
+.kpi .d{font-size:12.5px;color:var(--mut)}
+.chart svg{width:100%;height:96px;display:block}
+.chart .h{display:flex;justify-content:space-between;font-weight:600}
+.two{display:grid;grid-template-columns:1.6fr 1fr;gap:18px;align-items:start}
+.tools{display:flex;gap:10px;margin:16px 0 8px;flex-wrap:wrap}
+.search{flex:1;min-width:160px;border:1px solid var(--line);border-radius:11px;padding:10px 14px;font:inherit}
+.tabs{display:flex;background:#f1f5fa;border-radius:11px;padding:3px}
+.tabs button{border:0;background:none;padding:7px 12px;border-radius:9px;color:var(--mut);font-weight:600}
+.tabs button.on{background:#fff;color:var(--blue);box-shadow:0 1px 3px rgba(13,31,60,.1)}
+.qh{display:flex;justify-content:space-between;align-items:center}
+.qh h2{font-size:20px;font-weight:600;margin-top:4px}
+.qh h2 span{font-size:12px;background:var(--bl);color:var(--blue);border-radius:99px;padding:2px 10px;margin-left:8px;font-weight:700}
+.list{max-height:520px;overflow:auto}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:center;padding:14px 10px;border-bottom:1px solid var(--line);cursor:pointer;border-left:3px solid transparent}
+.row:hover{background:#f7faff}.row.sel{background:#eef5ff;border-left-color:var(--blue)}
+.av{width:40px;height:40px;border-radius:12px;background:var(--bl);color:#3a5f96;display:grid;place-items:center;font-weight:700;font-size:13px}
+.row b{display:block}.row small{color:var(--mut);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38ch}
+.rv{text-align:right}.rv .n{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums}.rv small{font-weight:700}
+.tag{font-size:11px;font-weight:700;color:var(--blue);background:var(--bl);border-radius:6px;padding:1px 7px;margin-left:8px}
+.sp h3{font-size:24px;font-weight:600;margin:6px 0 2px}
+.score{background:#f4f7fc;border-radius:14px;padding:16px;margin:16px 0;display:flex;justify-content:space-between;align-items:flex-end}
+.score b{font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}.score b small{font-size:16px;color:var(--mut);font-weight:500}
+.vt{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin:10px 0 16px}
+.vt div{border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+.vt small{font-size:11px;color:var(--mut)}.vt b{display:block;font-size:20px;font-variant-numeric:tabular-nums}.vt b i{font-size:11px;color:var(--mut);font-weight:500;font-style:normal}
+.why{display:flex;gap:12px;border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.why .x{width:22px;height:22px;border:2px solid var(--red);color:var(--red);border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.why ul{padding-left:16px;color:#3a4a66;margin-top:3px}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--mut);font-size:12.5px;padding:8px 10px;border-bottom:1px solid var(--line)}td{padding:11px 10px;border-bottom:1px solid var(--line)}
+.tw{overflow-x:auto}
+.hide{display:none!important}
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-top:18px}.mg img{width:100%;border-radius:10px;margin-top:8px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}.kv div{background:#f4f7fc;border-radius:12px;padding:12px}.kv b{font-size:22px;display:block}.kv span{font-size:12px;color:var(--mut)}
+.chip{font-weight:700;font-size:13px;background:var(--bl);color:var(--blue);border-radius:99px;padding:6px 12px;font-variant-numeric:tabular-nums}
+.score{align-items:center;gap:16px}
+.gauge{position:relative;width:118px;height:118px;flex:none}.gauge svg{width:100%;height:100%}.gauge b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:800;font-variant-numeric:tabular-nums}.gauge b small{font-size:13px;color:var(--mut);margin-left:1px}
+.gs{display:grid;gap:8px;flex:1}.gs small{display:block;font-size:11px;color:var(--mut)}.gs b{font-size:16px;display:block}
+.sh{display:grid;grid-template-columns:minmax(90px,150px) 1fr 44px;gap:8px;align-items:center;font-size:12.5px;margin-bottom:6px}.sh i{height:8px;background:#eef2f8;border-radius:9px;overflow:hidden;display:block}.sh u{display:block;height:100%}.sh b{text-align:right;font-variant-numeric:tabular-nums}
+.al{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid #f7c9cd;background:#fff7f7;border-radius:12px;padding:10px 12px;margin-top:10px}.al.done{opacity:.55;border-color:var(--line);background:#f7f9fc}.al b{display:block}.al small{display:block;color:var(--mut)}.feed{max-height:340px;overflow:auto}
+button.pill{background:none;border:0;padding:5px 8px;border-radius:99px}button.pill:hover{background:#f0f6f2}.paused .chip{background:#eef1f6;color:var(--mut)}
+.ban{background:#fdeaeb;border:1px solid #f7c9cd;color:#8f1d25;border-radius:12px;padding:11px 16px;margin-bottom:16px;font-weight:600}.ban.ok{background:#e5f7ef;border-color:#b7e6d0;color:#0d6b47}
+.mini{border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:8px}.mini .h{display:flex;justify-content:space-between;font-size:12.5px;gap:8px}.mini svg{width:100%;height:58px;display:block}
+.ed{background:#f4f7fc;border-radius:12px;padding:12px;margin-bottom:14px}.er{display:grid;grid-template-columns:1fr 72px 72px;gap:6px;align-items:center;margin-bottom:6px;font-size:12.5px}.er input{border:1px solid var(--line);border-radius:8px;padding:5px 7px;font:inherit;width:100%}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:820px){.app{grid-template-columns:1fr}.side{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px}.side .cap,.side .foot{display:none}.logo{margin:0 8px 0 0}.nav{width:auto;padding:9px 12px}.page{padding:16px}.topbar{padding:0 16px}h1{font-size:28px}}
+@media(max-width:520px){.kpis{grid-template-columns:1fr}.nav span{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="logo"><svg viewBox="0 0 42 42" aria-hidden="true"><rect width="42" height="42" rx="12" fill="#0a5fd8"/><path d="M6 23h8l3-8 5 15 4-11 2 4h8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>Vita<span>Nex</span></b><small>EARLY WARNING</small></div></div>
+  <div class="cap">CLINICAL WORKSPACE</div>
+  <button class="nav on" data-v="risk">▦ <span>Risk review</span></button>
+  <button class="nav" data-v="queue">☺ <span>Patient queue</span><em id="nq">0</em></button>
+  <button class="nav" data-v="model">∿ <span>Model insights</span></button>
+  <div class="foot">Ward clock runs live, one ICU hour per second. Click the status or press Space to pause.</div>
+</aside>
+<div>
+<div class="topbar"><div class="crumb">VitaNex <b id="crumb">Risk review</b></div><button id="sys" class="pill live" title="Click or press Space to pause / resume"><i class="dot"></i><span id="sysl">System live</span><span id="clk" class="chip">T+1h</span></button></div>
+<div class="page">
+
+<div id="ban" class="ban hide" role="alert"></div>
+<section id="v-risk">
+  <div class="hero">
+    <div><div class="cap"><i class="dot"></i><span id="dt">LIVE MONITORING</span></div><h1 id="hi">Good morning</h1><div class="sub">Here's the clinical picture for your unit right now.</div></div>
+    <div hidden><input id="hour" type="range" min="1" max="24" value="1"><output id="hv">1</output><input id="sens" type="range" min="0.5" max="2" step="0.05" value="1"><output id="sv">1.00x</output><output id="kv">3</output></div>
+  </div>
+  <div class="kpis">
+    <div class="card kpi red"><div class="ic" style="background:#fdeaeb">❗</div><small>Critical</small><b id="k1">0</b><div class="d" id="k1d"></div></div>
+    <div class="card kpi"><div class="ic" style="background:#e5f7ef">🛡</div><small>Watch</small><b id="k2">0</b><div class="d" id="k2d"></div></div>
+    <div class="card kpi"><div class="ic" style="background:#fff0e6">📈</div><small>Beds</small><b id="k3">0</b><div class="d" id="k3d"></div></div>
+    <div class="card chart"><div class="h"><span>Ward risk · live</span><span id="wd" style="color:var(--grn)"></span></div><div id="wc"></div></div>
+  </div>
+  <div class="two">
+    <div class="card">
+      <div class="cap">PRIORITY QUEUE</div>
+      <div class="qh"><h2>Patients needing review<span id="qn">0</span></h2><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><label class="cap" style="display:flex;gap:6px;align-items:center">Review top <select id="k" class="search" style="flex:none;padding:6px 8px;min-width:0"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></label><button class="btn alt" id="copy" style="padding:6px 12px">Copy shift summary</button></div></div>
+      <div class="tools"><input id="q" class="search" placeholder="Search patients..." aria-label="Search patients"><div class="tabs" id="tabs"><button data-f="all" class="on">All</button><button data-f="high">Critical</button><button data-f="watch">Watch</button></div></div>
+      <div id="list" class="list"></div>
+    </div>
+    <div style="display:grid;gap:18px"><div class="card sp" id="sp"></div><div class="card" id="al"></div></div>
+  </div>
+</section>
+
+<section id="v-queue" class="hide"><div class="card"><div class="cap">FULL WARD</div><h2 style="margin:4px 0 12px;font-weight:600">All patients, ranked by priority</h2>
+  <div class="tw"><table><thead><tr><th>Patient</th><th>Risk</th><th>Change (6h)</th><th>Main drivers</th><th>Ground truth (demo only)</th></tr></thead><tbody id="rows"></tbody></table></div></div></section>
+
+<section id="v-model" class="hide"><div class="card"><div class="cap">MODEL INSIGHTS</div><div id="metrics" class="kv" style="margin-top:12px"></div></div>
+  <div class="mg"><div class="card"><b>What drives predictions</b><img src="/artifacts/shap_summary.png" alt="SHAP summary"></div>
+  <div class="card"><b>Is the risk score trustworthy?</b><img src="/artifacts/calibration.png" alt="Calibration"></div>
+  <div class="card"><b>Alert workload vs. patients caught</b><img src="/artifacts/alert_budget.png" alt="Alert budget"></div></div></section>
+</div></div></div>
+
+<script>
+const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const T=()=>({w:.15/S.sens,c:.4/S.sens}), cat=r=>{const t=T();return r>=t.c?"high":r>=t.w?"watch":"stable"};
+const clock=()=>{$("#clk").textContent="T+"+$("#hour").value+"h"};
+const CL={high:["Critical","var(--red)"],watch:["Watch","var(--org)"],stable:["Stable","var(--grn)"]};
+const pct=r=>(r*100).toFixed(1), pts=c=>(c>=0?"+":"")+(c*100).toFixed(1)+" pts";
+const S={live:true,sel:null,f:"all",q:"",hist:[],board:[],busy:false,max:24,sens:1,speed:1,alarms:[],streak:{},last:{}};
+
+let GI=0;
+function line(v,color,lo,hi,marks=[]){ const gi="g"+(++GI); if(v.length<2) return '<svg viewBox="0 0 300 96"></svg>';
+  lo=lo??Math.min(...v); hi=hi??Math.max(...v); const sp=(hi-lo)||1, mk=marks.map(m=>{const y=84-(m-lo)/sp*72;return `<line x1="0" x2="300" y1="${y}" y2="${y}" stroke="#94a3b8" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/>`}).join("");
+  const p=v.map((y,i)=>[i/(v.length-1)*300, 84-(y-lo)/sp*72]), d=p.map(a=>a[0].toFixed(1)+","+a[1].toFixed(1)).join(" ");
+  return `<svg viewBox="0 0 300 96" preserveAspectRatio="none"><defs><linearGradient id="${gi}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".22"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>${mk}<polygon points="0,96 ${d} 300,96" fill="url(#${gi})"/><polyline points="${d}" fill="none" stroke="${color}" stroke-width="2.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${p.at(-1)[0]}" cy="${p.at(-1)[1]}" r="3.5" fill="${color}"/></svg>`;}
+
+async function load(tick){
+  if(S.busy) return; S.busy=true;
+  try{
+    const h=$("#hour").value,k=$("#k").value;
+    const r0=await fetch(`/api/board?hour=${h}&k=${k}`); if(!r0.ok){let m="";try{m=(await r0.json()).error}catch(e){} throw new Error(m||("server returned "+r0.status));}
+    const d=await r0.json(); S.board=d.board; try{S.vit=await(await fetch(`/api/vitals?hour=${h}`)).json();}catch(e){S.vit={};} if($("#ban").classList.contains("err")) $("#ban").classList.add("hide");
+    const b=d.board; if(!b.length){ $("#list").innerHTML='<div style="padding:26px;text-align:center;color:var(--mut)">No patients have data at this hour.</div>'; banner("No patient rows found at ICU hour "+h+". Check that artifacts/dashboard_data.csv has data.","err"); return;}
+    if(!b.find(r=>r.patient===S.sel)) S.sel=b[0].patient;
+    const hi=b.filter(r=>cat(r.risk)=="high").length, wa=b.filter(r=>cat(r.risk)=="watch").length, up=b.filter(r=>r.change_6h>.005).length;
+    $("#k1").textContent=hi; $("#k1d").textContent=`${Math.min(k,b.length)} flagged for review now`;
+    $("#k2").textContent=wa; $("#k2d").textContent="above the watch level";
+    $("#k3").textContent=b.length; $("#k3d").textContent=`${up} with risk rising over 6h`;
+    $("#nq").textContent=b.length; if(tick) alarms(b); renderAlarms();
+    const mean=b.reduce((a,r)=>a+r.risk,0)/b.length; S.hist.push(mean); S.hist=S.hist.slice(-40);
+    $("#wc").innerHTML=line(S.hist,"#0a5fd8",0); $("#wd").textContent=pct(mean)+"% avg";
+    renderList(); renderTable(); await renderSel();
+  }catch(e){ console.error(e); banner("Could not load patient data: "+e.message+". Open /api/board?hour=24&k=3 in a new tab to see the full server error.","err"); } finally{ S.busy=false; }
+}
+
+function alarms(b){
+  const t=T(), now=+$("#hour").value;
+  b.forEach(r=>{const p=r.patient; S.streak[p]=r.risk>=t.c?(S.streak[p]||0)+1:0;
+    if(S.streak[p]>=2 && now-(S.last[p]??-99)>=8 && !S.alarms.some(a=>a.p===p&&!a.ack)){
+      S.last[p]=now; S.alarms.unshift({p,t:now,risk:r.risk,why:r.drivers[0],ack:false}); banner(`Patient ${p} has stayed critical for 2+ hours (${pct(r.risk)}%). Click to review.`,"crit",p);}});
+  S.alarms=S.alarms.slice(0,30);
+}
+function renderAlarms(){
+  const act=S.alarms.filter(a=>!a.ack).length;
+  const h=`<div class="qh"><div><div class="cap">ALARM FEED</div><div style="color:var(--mut);font-size:12px;margin-top:2px;max-width:34ch">Brief crossings are suppressed: risk must stay critical for 2 hours, then that patient pauses for 8 hours.</div></div><div style="text-align:right"><span class="tag" style="background:#fdeaeb;color:var(--red);margin:0 0 6px;display:inline-block">${act} active</span><br><button class="btn alt" id="ackall" style="padding:5px 10px">Ack all</button></div></div>
+  <div class="feed">${S.alarms.slice(0,8).map((a,i)=>`<div class="al ${a.ack?"done":""}"><div><small class="cap" style="color:var(--red)">CRITICAL · T+${a.t}h</small><b>Patient ${esc(a.p)}</b><small>${esc(a.why)}</small></div><div class="rv"><div class="n" style="color:var(--red)">${pct(a.risk)}%</div>${a.ack?"<small>Acknowledged</small>":`<button class="btn alt" data-ack="${i}" style="padding:4px 10px">Acknowledge</button>`}</div></div>`).join("")||'<div style="padding:18px;text-align:center;color:var(--mut)">No alarms yet. The stream is being watched.</div>'}</div>`;
+  if(S.ah!==h){S.ah=h; $("#al").innerHTML=h;}
+}
+function renderList(){
+  const k=+$("#k").value, q=S.q.toLowerCase();
+  const rows=S.board.map((r,i)=>({...r,i})).filter(r=>(S.f=="all"||cat(r.risk)==S.f)&&r.patient.toLowerCase().includes(q));
+  $("#qn").textContent=rows.length;
+  $("#list").innerHTML=rows.map(r=>{const c=cat(r.risk);return `<div class="row ${r.patient===S.sel?"sel":""}" data-p="${esc(r.patient)}" tabindex="0">
+   <div class="av">${esc(r.patient.slice(-2).toUpperCase())}</div>
+   <div><b>Patient ${esc(r.patient)}${r.i<k?'<span class="tag">Review now</span>':""}${vw(r.patient)}</b><small>${esc(r.drivers.join(" · "))}</small></div>
+   <div class="rv"><div class="n" style="color:${CL[c][1]}">${pct(r.risk)}%</div><small style="color:${CL[c][1]}">● ${CL[c][0]}</small></div></div>`}).join("")
+   ||'<div style="padding:26px;text-align:center;color:var(--mut)">No patients match.</div>';
+}
+function renderTable(){
+  $("#rows").innerHTML=S.board.map(r=>`<tr><td><b>${esc(r.patient)}</b></td><td style="color:${CL[cat(r.risk)][1]};font-weight:700">${pct(r.risk)}%</td><td>${pts(r.change_6h)}</td><td>${r.drivers.map(esc).join(", ")}</td><td style="color:var(--mut)">${esc(r.truth)}</td></tr>`).join("");
+}
+async function renderSel(){ if(S.edit&&!S.force) return;
+  const r=S.board.find(x=>x.patient===S.sel); if(!r) return; const c=cat(r.risk);
+  S.feedErr=false; const J=u=>fetch(u).then(x=>{if(!x.ok) throw 0; return x.json();}).catch(()=>{S.feedErr=true; return {};}), id=encodeURIComponent(r.patient), hh=$("#hour").value;
+  const [p0,s0]=await Promise.all([J(`/api/patient/${id}?hour=${hh}`),J(`/api/shap/${id}?hour=${hh}`)]); const p=p0.vitals?p0:{vitals:{}}, sh=s0.factors||[];
+  
+  const v=p.vitals||{}, f=(x,dp=0)=>x==null?"–":Number(x).toFixed(dp);
+  const outs=[]; Object.keys(DEF).forEach(k=>{const x=v[k]; if(isOut(r.patient,k,x)){const [lo,hi]=rng(r.patient,k); outs.push({k,v:x,lo,hi,d:x<lo?"below":"above"});}});
+  const cur=new Set(outs.map(o=>r.patient+o.k));
+  if(S.wp!==r.patient) S.wp=r.patient; else outs.forEach(o=>{ if(!S.w.has(r.patient+o.k)) banner(`${VL[o.k][0]} for Patient ${r.patient} crossed its safe range (${o.v} ${VL[o.k][1]}).`,"crit",r.patient); });
+  S.w=cur;
+  const warn=outs.length?`<div class="ban" style="margin:0 0 14px;font-size:13px">${outs.map(o=>`⚠ ${VL[o.k][0]} ${o.v} ${VL[o.k][1]} is ${o.d} the safe range (${o.lo}–${o.hi})`).join("<br>")}</div>`:"";
+  const ed=S.edit?`<div class="ed"><div class="cap" style="margin-bottom:8px">SAFETY RANGES FOR THIS PATIENT</div>${Object.keys(DEF).map(k=>{const [a,b]=rng(r.patient,k); return `<label class="er"><span>${VL[k][0]} (${VL[k][1]})</span><input type="number" step="any" data-rk="${k}" data-i="0" value="${a}" aria-label="${VL[k][0]} minimum"><input type="number" step="any" data-rk="${k}" data-i="1" value="${b}" aria-label="${VL[k][0]} maximum"></label>`}).join("")}<div style="display:flex;gap:8px;margin-top:8px"><button class="btn" data-done>Save</button><button class="btn alt" data-reset>Reset to defaults</button></div></div>`:"";
+  const meta=[p.age!=null?p.age+" years":null,p.gender,"ID "+r.patient].filter(Boolean).join(" · ");
+  const ch=r.change_6h, col=CL[c][1], t=T(); let above=0; for(let i=r.trend.length-1;i>=0&&r.trend[i]>=t.w;i--) above++;
+  $("#sp").innerHTML=`<div class="cap">SELECTED PATIENT</div><h3>Patient ${esc(r.patient)}</h3><div style="color:var(--mut)">${esc(meta)}</div>
+  <div class="score"><div class="gauge"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#e2e9f2" stroke-width="10"/><circle cx="60" cy="60" r="50" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(Math.min(r.risk,1)*314).toFixed(0)} 314" transform="rotate(-90 60 60)"/></svg><b style="color:${col}">${Math.round(r.risk*100)}<small>%</small></b></div><div class="gs"><div><small>Status</small><b style="color:${col}">${CL[c][0]}</b></div><div><small>Trend (6h)</small><b>${pts(ch)}</b></div><div><small>Above watch level</small><b>${above} h</b></div></div></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><div class="cap" style="color:${S.feedErr?"var(--red)":"var(--grn)"}">${S.feedErr?"● FEED OFFLINE":"● LIVE VITALS"} <span style="color:var(--mut);letter-spacing:0;font-weight:500;font-size:11px">· updated ${new Date().toLocaleTimeString()}</span></div><button class="btn alt" data-edit style="padding:4px 10px">Safety ranges</button></div>${ed}
+  ${warn}<div class="vt"><div${ab("HR",v.HR)}><small>Heart rate</small><b>${f(v.HR)} <i>bpm</i></b></div><div${ab("O2Sat",v.O2Sat)}><small>SpO₂</small><b>${f(v.O2Sat)} <i>%</i></b></div><div${ab("Resp",v.Resp)}><small>Resp. rate</small><b>${f(v.Resp)} <i>/min</i></b></div><div${ab("SBP",v.SBP)}><small>Blood pressure</small><b>${f(v.SBP)}/${f(v.DBP)}</b></div><div${ab("Temp",v.Temp)}><small>Temp</small><b>${f(v.Temp,1)} <i>°C</i></b></div><div${ab("Lactate",v.Lactate)}><small>Lactate</small><b>${f(v.Lactate,1)} <i>mmol/L</i></b></div><div${ab("MAP",v.MAP)}><small>MAP</small><b>${f(v.MAP)} <i>mmHg</i></b></div></div>
+  <div class="chart"><div class="h"><span>Risk score · last 24h</span><span style="color:${ch>.005?"var(--red)":ch<-.005?"var(--grn)":"var(--mut)"}">${ch>.005?"↑":ch<-.005?"↓":"→"} ${pts(ch)} 6h</span></div>${line(r.trend,col,0,Math.max(...r.trend,t.c*1.15),[t.w,t.c])}</div>
+  <div class="cap" style="margin:14px 0 8px">24-HOUR TREND HISTORY</div>${tr("Heart rate","bpm",p.hr,"HR","#e5303b")}${tr("Oxygen (SpO₂)","%",p.spo2,"O2Sat","#0a5fd8")}
+  <div class="cap" style="margin:14px 0 8px">TOP CONTRIBUTING FEATURES (SHAP)</div>${sh.map(x=>{const m=Math.max(...sh.map(y=>Math.abs(y[1])),.01);return `<div class="sh"><span>${esc(x[0])}</span><i><u style="width:${Math.abs(x[1])/m*100}%;background:${x[1]>0?"var(--red)":"var(--grn)"}"></u></i><b>${x[1]>0?"+":""}${x[1].toFixed(2)}</b></div>`}).join("")||`<small style="color:var(--mut)">SHAP is loading or unavailable.</small>`}
+  <div class="why"><div class="x">!</div><div><b>Why this is flagged</b><ul>${r.drivers.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>`;
+}
+
+$("#list").onclick=e=>{const el=e.target.closest(".row"); if(el){S.sel=el.dataset.p; S.edit=false; renderList(); renderSel();}};
+$("#list").onkeydown=e=>{if(e.key==="Enter"){const el=e.target.closest(".row"); if(el) el.click();}};
+$("#q").oninput=e=>{S.q=e.target.value; renderList();};
+$("#tabs").onclick=e=>{const b=e.target.closest("button"); if(!b) return; S.f=b.dataset.f; document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b)); renderList();};
+let w; const soon=()=>{clearTimeout(w); w=setTimeout(()=>{$("#hv").textContent=$("#hour").value;$("#kv").textContent=$("#k").value;S.hist=[];clock();load();},100)};
+$("#hour").oninput=soon;
+
+let bt; function banner(msg,kind,pid){ const b=$("#ban"); b.className="ban "+kind; b.textContent=msg; b.style.cursor=pid?"pointer":"default";
+  b.onclick=pid?()=>{S.sel=pid;S.edit=false;renderList();renderSel();b.classList.add("hide");}:null; clearTimeout(bt); if(kind!=="err") bt=setTimeout(()=>b.classList.add("hide"),kind==="crit"?12000:4000); }
+const DEF={HR:[50,110],O2Sat:[92,100],Resp:[8,24],SBP:[90,180],Temp:[36,38],Lactate:[0,2],MAP:[65,110]};
+const VL={HR:["Heart rate","bpm"],O2Sat:["SpO₂","%"],Resp:["Respiratory rate","/min"],SBP:["Systolic BP","mmHg"],Temp:["Temperature","°C"],Lactate:["Lactate","mmol/L"],MAP:["MAP","mmHg"]};
+try{S.rng=JSON.parse(localStorage.getItem("vn_rng")||"{}");}catch(e){S.rng={};} S.w=new Set();
+const saveR=()=>{try{localStorage.setItem("vn_rng",JSON.stringify(S.rng));}catch(e){}};
+const rng=(pid,k)=>((S.rng[pid]||{})[k])||DEF[k];
+const isOut=(pid,k,x)=>x!=null&&(x<rng(pid,k)[0]||x>rng(pid,k)[1]);
+const ab=(k,x)=>isOut(S.sel,k,x)?' style="border-color:#f3b4b9;background:#fff5f5"':"";
+const vw=pid=>{const v=(S.vit||{})[pid]; if(!v) return ""; const n=Object.keys(DEF).filter(k=>isOut(pid,k,v[k])).length; return n?`<span class="tag" style="background:#fdeaeb;color:var(--red)">⚠ ${n} vital${n>1?"s":""}</span>`:"";};
+const tr=(lab,unit,arr,k,col)=>{const v=(arr||[]).filter(x=>x!=null); if(v.length<2) return `<div class="mini"><div class="h"><b>${lab}</b><span style="color:var(--mut)">no data yet</span></div></div>`;
+  const [a,b]=rng(S.sel,k), last=v.at(-1), bad=isOut(S.sel,k,last);
+  return `<div class="mini"><div class="h"><b>${lab}</b><span style="font-weight:700;color:${bad?"var(--red)":"var(--ink)"}">${last} ${unit} <span style="color:var(--mut);font-weight:500">· 24h range ${Math.min(...v)}–${Math.max(...v)}</span></span></div>${line(v,col,Math.min(...v,a)-2,Math.max(...v,b)+2,[a,b])}</div>`;};
+function toggle(){ S.live=!S.live; $("#sys").className="pill "+(S.live?"live":"paused"); $("#sysl").textContent=S.live?"System live":"Paused"; }
+$("#sys").onclick=toggle;
+document.addEventListener("keydown",e=>{ if(e.code==="Space" && !/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName)){ e.preventDefault(); toggle(); }});
+$("#k").oninput=()=>{ $("#kv").textContent=$("#k").value; load(); };
+$("#copy").onclick=async()=>{ const t=T(), h=$("#hour").value, c=S.board.filter(r=>r.risk>=t.w).slice(0,10);
+  const txt=`VitaNex shift summary · ICU hour ${h}\n`+(c.map(r=>`Patient ${r.patient}: ${pct(r.risk)}% (${CL[cat(r.risk)][0]}, ${pts(r.change_6h)} over 6h). Drivers: ${r.drivers.join("; ")}`).join("\n")||"No patients above the watch level.");
+  try{ await navigator.clipboard.writeText(txt); banner("Shift summary copied to the clipboard.","ok"); }catch(e){ banner("Could not copy. Your browser blocked clipboard access.","err"); } };
+const again=()=>{S.force=true; renderSel().then(()=>{S.force=false;});};
+$("#sp").onclick=e=>{ if(e.target.closest("[data-edit]")){S.edit=true; again();} else if(e.target.closest("[data-done]")){S.edit=false; renderSel(); renderList();} else if(e.target.closest("[data-reset]")){delete S.rng[S.sel]; saveR(); again();} };
+$("#sp").onchange=e=>{ const i=e.target.closest("[data-rk]"); if(!i) return; const k=i.dataset.rk, c=[...rng(S.sel,k)]; c[+i.dataset.i]=parseFloat(i.value); if(c.every(Number.isFinite)){ (S.rng[S.sel]=S.rng[S.sel]||{})[k]=c; saveR(); } };
+(function loop(){ if(S.live){ const s=$("#hour"); s.value=+s.value>=S.max?1:+s.value+1; if(+s.value===1){S.hist=[];S.streak={};S.last={};} $("#hv").textContent=s.value; clock(); load(true);} setTimeout(loop,1000/S.speed); })();
+$("#sens").oninput=()=>{S.sens=+$("#sens").value; $("#sv").textContent=S.sens.toFixed(2)+"x"; load();};
+$("#al").onclick=e=>{const a=e.target.closest("[data-ack]"); if(a) S.alarms[+a.dataset.ack].ack=true; if(e.target.closest("#ackall")) S.alarms.forEach(x=>x.ack=true); renderAlarms();};
+
+document.querySelectorAll(".nav").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll(".nav").forEach(x=>x.classList.toggle("on",x===b));
+  ["risk","queue","model"].forEach(v=>$("#v-"+v).classList.toggle("hide",v!==b.dataset.v));
+  $("#crumb").textContent=b.querySelector("span").textContent;});
+
+function flat(o,p=""){return Object.entries(o).flatMap(([k,v])=>v&&typeof v==="object"?flat(v,p+k+" "):typeof v==="number"?[[p+k,v]]:[]);}
+(async function init(){
+  const t=new Date(), g=t.getHours(); $("#hi").textContent=g<12?"Good morning":g<18?"Good afternoon":"Good evening";
+  $("#dt").textContent="LIVE MONITORING · "+t.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}).toUpperCase();
+  const m=await(await fetch("/api/meta")).json(); S.max=m.max_hour; $("#hour").max=m.max_hour;
+  try{ const it=flat(await(await fetch("/api/metrics")).json());
+    $("#metrics").innerHTML=it.length?it.map(([k,v])=>`<div><b>${Number.isInteger(v)?v:v.toFixed(3)}</b><span>${esc(k.replace(/_/g," "))}</span></div>`).join(""):"Run train.py to generate metrics.";}catch(e){}
+  clock(); load();
+})();
+</script>
+   <script src="/artifacts/live.js"></script>
+</body>
+</html>

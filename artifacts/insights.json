@@ -1,0 +1,118 @@
+{
+  "budget_target": 20,
+  "window_hours": 24,
+  "operating_point": {
+    "threshold": 0.05928558,
+    "alerts_per_100_patient_days": 19.01510221673836,
+    "septic_caught_early_pct": 47.81659388646288,
+    "median_lead_hours": 15.0
+  },
+  "smart": [
+    {
+      "threshold": 0.037120868,
+      "alerts_per_100_patient_days": 37.198610629864696,
+      "septic_caught_early_pct": 65.72052401746726,
+      "median_lead_hours": 16.0
+    },
+    {
+      "threshold": 0.040591676,
+      "alerts_per_100_patient_days": 25.282479907375322,
+      "septic_caught_early_pct": 55.24017467248908,
+      "median_lead_hours": 16.0
+    },
+    {
+      "threshold": 0.05928558,
+      "alerts_per_100_patient_days": 19.01510221673836,
+      "septic_caught_early_pct": 47.81659388646288,
+      "median_lead_hours": 15.0
+    },
+    {
+      "threshold": 0.076595746,
+      "alerts_per_100_patient_days": 11.85528239539581,
+      "septic_caught_early_pct": 37.33624454148472,
+      "median_lead_hours": 16.0
+    },
+    {
+      "threshold": 0.09879518,
+      "alerts_per_100_patient_days": 10.202236176020687,
+      "septic_caught_early_pct": 34.27947598253275,
+      "median_lead_hours": 16.0
+    },
+    {
+      "threshold": 0.15384616,
+      "alerts_per_100_patient_days": 5.385076947780304,
+      "septic_caught_early_pct": 25.54585152838428,
+      "median_lead_hours": 15.0
+    },
+    {
+      "threshold": 0.19726562,
+      "alerts_per_100_patient_days": 4.239100120851538,
+      "septic_caught_early_pct": 22.489082969432314,
+      "median_lead_hours": 13.0
+    },
+    {
+      "threshold": 0.24489796,
+      "alerts_per_100_patient_days": 1.5516323408858501,
+      "septic_caught_early_pct": 10.262008733624453,
+      "median_lead_hours": 11.0
+    }
+  ],
+  "naive": [
+    {
+      "threshold": 0.037120868,
+      "alerts_per_100_patient_days": 363.7411579774692,
+      "septic_caught_early_pct": 77.9475982532751,
+      "median_lead_hours": 21.0
+    },
+    {
+      "threshold": 0.040591676,
+      "alerts_per_100_patient_days": 252.19603302711974,
+      "septic_caught_early_pct": 65.06550218340611,
+      "median_lead_hours": 22.0
+    },
+    {
+      "threshold": 0.05928558,
+      "alerts_per_100_patient_days": 191.60124062978016,
+      "septic_caught_early_pct": 58.07860262008734,
+      "median_lead_hours": 22.5
+    },
+    {
+      "threshold": 0.076595746,
+      "alerts_per_100_patient_days": 121.8487750048594,
+      "septic_caught_early_pct": 44.10480349344978,
+      "median_lead_hours": 24.0
+    },
+    {
+      "threshold": 0.09879518,
+      "alerts_per_100_patient_days": 104.86195035790648,
+      "septic_caught_early_pct": 41.48471615720524,
+      "median_lead_hours": 23.5
+    },
+    {
+      "threshold": 0.15384616,
+      "alerts_per_100_patient_days": 51.17344308568627,
+      "septic_caught_early_pct": 31.222707423580786,
+      "median_lead_hours": 20.0
+    },
+    {
+      "threshold": 0.19726562,
+      "alerts_per_100_patient_days": 38.40543578388702,
+      "septic_caught_early_pct": 26.637554585152838,
+      "median_lead_hours": 19.5
+    },
+    {
+      "threshold": 0.24489796,
+      "alerts_per_100_patient_days": 12.849138404590667,
+      "septic_caught_early_pct": 16.593886462882097,
+      "median_lead_hours": 11.5
+    }
+  ],
+  "septic_patients": 458,
+  "subgroup_auroc": {
+    "age <40": 0.858,
+    "age 40-65": 0.83,
+    "age 65+": 0.847,
+    "gender 0": 0.853,
+    "gender 1": 0.831
+  }
+}

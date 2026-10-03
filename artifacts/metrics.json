@@ -1,0 +1,7 @@
+{
+  "AUROC": 0.84,
+  "AUPRC": 0.112,
+  "Brier": 0.0171,
+  "test_patients": 6051,
+  "sepsis_rate_rows": 0.018
+}
